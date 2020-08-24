@@ -1,0 +1,97 @@
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+cache:
+  paths:
+    - app/node_modules/
+
+image:
+  name: docker/compose:latest
+  entrypoint: ["/bin/sh", "-c"]
+
+services:
+  - docker:18.09-dind
+
+stages:
+ - lint
+ - test
+ - deploy-staging
+ - deploy-production
+
+pylint:
+  stage: lint
+  script:
+    - cd backend
+    - docker-compose -f docker-compose.yml up -d
+    - docker-compose -f docker-compose.yml exec -T web pylint --load-plugins pylint_django martin_helder unit_tests
+  only:
+    changes:
+      - backend/**/*
+
+eslint:
+  stage: lint
+  image: node
+  script:
+    - cd app
+    - |
+      npm install eslint \
+      @typescript-eslint/eslint-plugin@3.0.0 \
+      @typescript-eslint/parser@3.0.0 \
+      eslint-plugin-react-hooks \
+      eslint-plugin-react
+    - node_modules/eslint/bin/eslint.js '*/**/*.{js,ts,tsx}'
+  only:
+    changes:
+      - app/**/*
+
+Unit Testing:
+  stage: test
+  script:
+    - cd backend
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+    - sleep 10
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml exec -T web coverage run --source='.' ./manage.py test unit_tests
+    - docker-compose -f docker-compose.yml exec -T web coverage report
+  only:
+    changes:
+      - backend/**/*
+
+Integration Testing:
+  stage: test
+  script:
+    - cd backend
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+    - sleep 10
+    - docker-compose -f docker-compose.yml -f docker-compose.test.yml run newman run collection.json -e environment.json
+  only:
+    changes:
+      - backend/**/*
+
+Deploy to Staging:
+  only:
+    - develop
+  stage: deploy-staging
+  before_script:
+    - cd backend
+    - "which ssh-agent || ( apk add --update openssh )"
+    - eval $(ssh-agent -s)
+    - echo -e "$SSH_STAGING_PEM" > aws-lgp.pem
+    - chmod 400 aws-lgp.pem
+  script:
+    - ls -la
+    - sh deploy/deploy.staging.sh
+
+Deploy to Production:
+  only:
+    - master
+  stage: deploy-production
+  before_script:
+    - cd backend
+    - "which ssh-agent || ( apk add --update openssh )"
+    - eval $(ssh-agent -s)
+    - echo -e "$SSH_PRODCUTION_PEM" > aws-production.pem
+    - chmod 400 aws-production.pem
+  script:
+    - sh deploy/deploy.production.sh

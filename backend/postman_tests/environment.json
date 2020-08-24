@@ -1,0 +1,59 @@
+{
+	"id": "14195354-4466-4da9-9678-57a0ad8633d6",
+	"name": "martin_helder",
+	"values": [
+		{
+			"key": "host",
+			"value": "web:8000",
+			"enabled": true
+		},
+		{
+			"key": "id_patient",
+			"value": "79840898-b26f-441f-b8a3-a2642227c77d",
+			"enabled": true
+		},
+		{
+			"key": "id_treatment_cycle",
+			"value": "79840898-b26f-441f-b8a3-a2642227c77d",
+			"enabled": true
+		},
+		{
+			"key": "id_treatment",
+			"value": "98f0e26c-f59f-43a9-9500-594550b13174",
+			"enabled": true
+		},
+		{
+			"key": "id_goniometry",
+			"value": "c6f72e94-7298-4b8d-a6af-ac618c08dd1a",
+			"enabled": true
+		},
+		{
+			"key": "id_perimetry",
+			"value": "470b3586-86c1-4f3d-94be-a475bccf125b",
+			"enabled": true
+		},
+		{
+			"key": "id_muscle_test",
+			"value": "adebe2f4-c2d1-4d73-bb04-cd7ac30437a5",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImJiZDI5ZDNhLTU5NzctNGQwZS04YzhlLTk4N2MzMjllNmI3ZCIsImVtYWlsIjoiZW1haWxAZ21haWwuY29tIiwiaXNfYWRtaW4iOmZhbHNlLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTg5OTMxODM1fQ.XMUJLHthcoxJrNfRCda4KzPagVbynIxMz1RDzO_FhPc",
+			"enabled": true
+		},
+		{
+			"key": "refresh_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImJiZDI5ZDNhLTU5NzctNGQwZS04YzhlLTk4N2MzMjllNmI3ZCIsImVtYWlsIjoiZW1haWxAZ21haWwuY29tIiwiaXNfYWRtaW4iOmZhbHNlLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTU4OTk3MzIzNX0.Oyxl94zQqRwwZMvmaZ_P1NsKfW7fhJyWYn3r6R3Hn7w",
+			"enabled": true
+		},
+		{
+			"key": "admin_access_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjA5Mjk5NjRjLTY4NzQtNDZjOC05MDIyLWNhYjI3MTU2NmY5ZCIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaXNfYWRtaW4iOnRydWUsInRva2VuX3R5cGUiOiJhY2Nlc3MiLCJleHAiOjE1ODk5MzE4MzV9.S1anj_ETVC8yZBfJDS-JhHlaYeotbkNqu-7do0ckHyc",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-05-19T23:20:13.409Z",
+	"_postman_exported_using": "Postman/7.24.0"
+}

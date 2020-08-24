@@ -1,0 +1,6336 @@
+{
+	"info": {
+		"_postman_id": "6274985a-76c6-47b4-aa65-fd78640be845",
+		"name": "MartinHelderAPI",
+		"description": "Backend for the Martin Helder management system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Token",
+					"item": [
+						{
+							"name": "Login",
+							"item": [
+								{
+									"name": "Successful login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "68377811-6944-4e15-8664-1fa46fc36666",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('access');",
+													"    pm.expect(jsonData).to.have.property('refresh');",
+													"    pm.expect(jsonData).to.have.property('first_name');",
+													"    pm.expect(jsonData).to.have.property('last_name');",
+													"    pm.expect(jsonData).to.have.property('email');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"    pm.expect(jsonData).to.have.property('is_admin');",
+													"});",
+													"",
+													"pm.environment.set('access_token', pm.response.json()['access']['token'])",
+													"pm.environment.set('refresh_token', pm.response.json()['refresh']['token'])"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email@gmail.com\",\n\t\"password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Successful admin login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "87f50fd8-315a-4704-8198-a5796b873255",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('access');",
+													"    pm.expect(jsonData).to.have.property('refresh');",
+													"    pm.expect(jsonData).to.have.property('first_name');",
+													"    pm.expect(jsonData).to.have.property('last_name');",
+													"    pm.expect(jsonData).to.have.property('email');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"    pm.expect(jsonData).to.have.property('is_admin');",
+													"});",
+													"",
+													"pm.environment.set('admin_access_token', pm.response.json()['access']['token'])"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"admin@gmail.com\",\n\t\"password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "304942fe-2913-48ed-bee0-325f41c3cbca",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Email is not valid!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email.com\",\n\t\"password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "64c29aa2-e228-4ef1-b3ad-3090538d1ad6",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"No account found with the email non_exist@email.com!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"non_exist@email.com\",\n\t\"password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "04ac054d-aafd-4063-b558-025872cac8fd",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Wrong password!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email@gmail.com\",\n\t\"password\": \"wrong_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No email provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "a43db437-f76c-47cc-b703-2ff1addd345d",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing email!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No password provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "c8d503e5-d4a8-4bf7-b8e6-619ba6388eb0",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing password in credential!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/login",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Refresh",
+							"item": [
+								{
+									"name": "Successful refresh",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "40df1250-f683-4988-a286-20680f38b5be",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('access');",
+													"    pm.expect(jsonData).to.have.property('refresh');",
+													"    pm.expect(jsonData).to.have.property('first_name');",
+													"    pm.expect(jsonData).to.have.property('last_name');",
+													"    pm.expect(jsonData).to.have.property('email');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"    pm.expect(jsonData).to.have.property('is_admin');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"refresh_token\": \"{{refresh_token}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/refresh",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid refresh token",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "08f5c8c1-4694-4abc-b323-6a78904e7dd7",
+												"exec": [
+													"pm.test(\"Status code is 403\", function () {",
+													"    pm.response.to.have.status(403);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Error validating token!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"refresh_token\": \"invalid_token\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/refresh",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No refresh token provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "1e5e9de6-f5a6-45c2-8344-d290b93d64c5",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing refresh token!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/refresh",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Password",
+					"item": [
+						{
+							"name": "Reset",
+							"item": [
+								{
+									"name": "Successful Reset Password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ea8be6ed-78f0-45e6-8db2-5192133d3395",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Password was updated successfully\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"current_password\": \"secure_password\",\n\t\"new_password\": \"new_secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/reset",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Authorization",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "07f50606-ea5e-41e5-83cf-b717f59c3c38",
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing or invalid format for mandatory Authorization header\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"current_password\": \"secure_password\",\n\t\"new_password\": \"new_secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/reset",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong current password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "d4de1536-1148-4e96-98fe-a6b2c853d5e3",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Wrong current password!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"current_password\": \"wrong_password\",\n\t\"new_password\": \"new_secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/reset",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No current password provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "0f2a31d7-a7d1-4aa6-a5d6-fd9160b73003",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing new password!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"current_password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/reset",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No new password provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "8cc214c3-4107-4d5f-9236-318f9e94ea17",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing new password!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"current_password\": \"secure_password\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/reset",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"reset"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Recover",
+							"item": [
+								{
+									"name": "Successful Recover Password",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3d0cce2a-f935-43ba-8596-331bf3ae3426",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"A new password was sent to the email provided\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/recover",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"recover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "0cdfeef9-9275-4aa1-9054-537a30f43592",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Invalid email format provided!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"email.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/recover",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"recover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ceea3846-1cce-431e-b342-c6936eb82096",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"No account found with the email non_exist@email.com!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"email\": \"non_exist@email.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/recover",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"recover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No email provided",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "eb985ea4-a071-4abb-b370-3a5316f88155",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing email!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/auth/password/recover",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"password",
+												"recover"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Treat Patient",
+			"item": [
+				{
+					"name": "Successful Treatment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "52844a31-432c-4605-a5ab-a3858aa5e4fa",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b44e220d-5754-4090-9b60-dd18b76d6256",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The return body is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('treatment_id');",
+									"    pm.expect(jsonData).to.have.property('perimetries_id');",
+									"    pm.expect(jsonData).to.have.property('muscle_tests_id');",
+									"    pm.expect(jsonData).to.have.property('treatment_requests_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2020-03-21 18:47:15.000000\",\n\t\"end_date\":\"2020-03-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\",\n\t\"perimetries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"size\":100,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"size\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t}\n\t\t],\n\t\"muscle_tests\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"strength\":5,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"member\":\"test member 2\",\n\t\t\t\t\"strength\":3,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t],\n\t\t\n\t\"goniometries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"min_abduction\":55,\n\t\t\t\t\"max_abduction\":78,\n\t\t\t\t\"min_adduction\":125,\n\t\t\t\t\"max_adduction\":140,\n\t\t\t\t\"min_flexion\":124,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":135,\n\t\t\t\t\"max_rotation\":176,\n\t\t\t\t\"min_extension\":23,\n\t\t\t\t\"max_extension\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"min_abduction\":35,\n\t\t\t\t\"max_abduction\":98,\n\t\t\t\t\"min_adduction\":35,\n\t\t\t\t\"max_adduction\":170,\n\t\t\t\t\"min_flexion\":80,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":35,\n\t\t\t\t\"max_rotation\":66,\n\t\t\t\t\"min_extension\":43,\n\t\t\t\t\"max_extension\":79,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Successful Treatment (No extra treatment info)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "4a8a66f6-6193-4413-8df9-383491200590",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "41bbf3a8-a8ff-4170-9257-b9e756d0eb0b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"The return body is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('treatment_id');",
+									"    pm.expect(jsonData).to.not.have.property('perimetries_id');",
+									"    pm.expect(jsonData).to.not.have.property('muscle_tests_id');",
+									"    pm.expect(jsonData).to.not.have.property('treatment_requests_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2020-03-21 18:47:15.000000\",\n\t\"end_date\":\"2020-03-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No treatment start date provided",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef0c0a21-7411-4a1c-ac37-fc3210b380e9",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a81f4c44-6bcf-4e13-8f4a-7c8552c6b2f1",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error received is correct\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Missing start date!\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"end_date\":\"2020-03-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\",\n\t\"perimetries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"size\":100,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"size\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t}\n\t\t],\n\t\"muscle_tests\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"strength\":5,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"strength\":3,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t],\n\t\t\n\t\"goniometries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"min_abduction\":55,\n\t\t\t\t\"max_abduction\":78,\n\t\t\t\t\"min_adduction\":125,\n\t\t\t\t\"max_adduction\":140,\n\t\t\t\t\"min_flexion\":124,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":135,\n\t\t\t\t\"max_rotation\":176,\n\t\t\t\t\"min_extension\":23,\n\t\t\t\t\"max_extension\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"min_abduction\":35,\n\t\t\t\t\"max_abduction\":98,\n\t\t\t\t\"min_adduction\":35,\n\t\t\t\t\"max_adduction\":170,\n\t\t\t\t\"min_flexion\":80,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":35,\n\t\t\t\t\"max_rotation\":66,\n\t\t\t\t\"min_extension\":43,\n\t\t\t\t\"max_extension\":79,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Treatment end date is before start date",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "393e6573-0a32-479b-b8ca-b8c2a7e2b322",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd86226f-094d-41f0-9810-87e62584ad9b",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error received is correct\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"End date must be after start date!\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2020-03-21 18:47:15.000000\",\n\t\"end_date\":\"2020-02-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\",\n\t\"perimetries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"size\":100,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"size\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t}\n\t\t],\n\t\"muscle_tests\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"strength\":5,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"strength\":3,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t],\n\t\t\n\t\"goniometries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"min_abduction\":55,\n\t\t\t\t\"max_abduction\":78,\n\t\t\t\t\"min_adduction\":125,\n\t\t\t\t\"max_adduction\":140,\n\t\t\t\t\"min_flexion\":124,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":135,\n\t\t\t\t\"max_rotation\":176,\n\t\t\t\t\"min_extension\":23,\n\t\t\t\t\"max_extension\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"min_abduction\":35,\n\t\t\t\t\"max_abduction\":98,\n\t\t\t\t\"min_adduction\":35,\n\t\t\t\t\"max_adduction\":170,\n\t\t\t\t\"min_flexion\":80,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":35,\n\t\t\t\t\"max_rotation\":66,\n\t\t\t\t\"min_extension\":43,\n\t\t\t\t\"max_extension\":79,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Treatment extra property has an error",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "102fcf9c-7e57-4227-ae37-dffbb7283b56",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "310a4a28-74ac-4a37-83c4-cb6a7db02a94",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error received is correct\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Perimetry size must be a number between 0 and 200!\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2020-03-21 18:47:15.000000\",\n\t\"end_date\":\"2020-03-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\",\n\t\"perimetries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"size\":400,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"member\":\"test member 2\",\n\t\t\t\t\"size\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t}\n\t\t],\n\t\"muscle_tests\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"strength\":5,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"strength\":3,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t],\n\t\t\n\t\"goniometries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"min_abduction\":55,\n\t\t\t\t\"max_abduction\":78,\n\t\t\t\t\"min_adduction\":125,\n\t\t\t\t\"max_adduction\":140,\n\t\t\t\t\"min_flexion\":124,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":135,\n\t\t\t\t\"max_rotation\":176,\n\t\t\t\t\"min_extension\":23,\n\t\t\t\t\"max_extension\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"min_abduction\":35,\n\t\t\t\t\"max_abduction\":98,\n\t\t\t\t\"min_adduction\":35,\n\t\t\t\t\"max_adduction\":170,\n\t\t\t\t\"min_flexion\":80,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":35,\n\t\t\t\t\"max_rotation\":66,\n\t\t\t\t\"min_extension\":43,\n\t\t\t\t\"max_extension\":79,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Limit of treatment cycle sessions reached",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c7b61c2-7675-4b08-85fd-1b6e81d40f40",
+								"exec": [
+									"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+									"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f0ba980d-7490-44a4-a1ea-460e3c23e83f",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error received is correct\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"All sessions of the treatment cycle \" + pm.environment.get(\"id_treatment_cycle\") + \" were already performed!\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2020-03-21 18:47:15.000000\",\n\t\"end_date\":\"2020-03-21 19:47:15.000000\",\n\t\"summary\":\"This is a summary\",\n\t\"pain_level\":4,\n\t\"medication\":\"This is the medication\",\n\t\"treatment\":\"This is the treatment\",\n\t\"periodic_evaluation\":\"This is the periodic evaluation\",\n\t\"perimetries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"size\":100,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"size\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t}\n\t\t],\n\t\"muscle_tests\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"strength\":5,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"strength\":3,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t],\n\t\t\n\t\"goniometries\":\n\t\t[\n\t\t\t{\n\t\t\t\t\"min_abduction\":55,\n\t\t\t\t\"max_abduction\":78,\n\t\t\t\t\"min_adduction\":125,\n\t\t\t\t\"max_adduction\":140,\n\t\t\t\t\"min_flexion\":124,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":135,\n\t\t\t\t\"max_rotation\":176,\n\t\t\t\t\"min_extension\":23,\n\t\t\t\t\"max_extension\":45,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"min_abduction\":35,\n\t\t\t\t\"max_abduction\":98,\n\t\t\t\t\"min_adduction\":35,\n\t\t\t\t\"max_adduction\":170,\n\t\t\t\t\"min_flexion\":80,\n\t\t\t\t\"max_flexion\":180,\n\t\t\t\t\"min_rotation\":35,\n\t\t\t\t\"max_rotation\":66,\n\t\t\t\t\"min_extension\":43,\n\t\t\t\t\"max_extension\":79,\n\t\t\t\t\"body_zone\":\"fcf1a46e-352a-468d-ada2-358464154b76\"\n\t\t\t\t\n\t\t\t}\n\t\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"patients",
+								"{{id_patient}}",
+								"treatment-cycles",
+								"{{id_treatment_cycle}}",
+								"treatments"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Add",
+					"item": [
+						{
+							"name": "Add Administrator",
+							"item": [
+								{
+									"name": "Add Admnistrator Successfully",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "9207f4df-2d4c-4ccb-a890-09532b388f9f",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "53c5ba6d-108a-481c-89ff-4b52ff5abdf9",
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('administrator_id');",
+													"    pm.expect(jsonData).to.have.property('person_id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"111222333\",\n\t\"first_name\":\"Pedro\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"last_name\":\"Antunes\",\n\t\"birth_date\":\"2020-03-21\",\n\t\"telephone_number\":\"961234567\",\n\t\"email\":\"test1@email.com\",\n\t\"gender\":\"m\",\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Email unique constraint violation",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "2dba004d-a521-4e87-b08c-85b706472270",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "fc547ff8-1e09-48fc-9bd3-8e808e856732",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Unique contraint violation! Another user with the same nif and/or email already exists\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"333444555\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"email@gmail.com\",\n\t\"gender\":\"m\",\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t}\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "NIF unique constraint violation",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "a4993645-85ec-490c-b188-e8778c1fffb6",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "4f74c2de-c651-4b43-85ec-6b35e6921907",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Unique contraint violation! Another user with the same nif and/or email already exists\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"123456789\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"nif@gmail.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator street provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "f7063f8a-2cdb-4d12-9ac6-f7d5e4697d64",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "90e3cfbc-8085-4d4d-98b0-ef9eecdd7d20",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing street in address!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"211222333\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Antunes\",\n\t\"birth_date\":\"2020-03-21\",\n\t\"telephone_number\":\"961234567\",\n\t\"email\":\"test2@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator city provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "e3d72a88-2b2e-4f25-871c-0860b3bd07fb",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "cbc4c92b-d0c1-4450-88e0-a12b9bac6066",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing city in address!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"311222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test3@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator nif provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "094b5063-bf2d-4936-8fb1-d002c3283ee4",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "46fa4178-96cc-45d5-b3df-c9c99e0e3781",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"pm.expect(pm.response.text()).to.include(\"Missing nif in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test4@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator first name provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "e37b410c-ce95-48d5-8c9d-4c96a3b9d9bf",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "679ad4ca-3c25-472d-9ecc-ee588b6deaa3",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"pm.expect(pm.response.text()).to.include(\"Missing first name in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"511222333\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test5@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator last name provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "f7f7538a-428f-4c8c-a78a-bb7d2e93a387",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "1c4f91df-2e89-4110-a9a1-fa9820b7de65",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"pm.expect(pm.response.text()).to.include(\"Missing last name in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"611222333\",\n\t\"first_name\":\"Mário\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test6@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator birth date provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "9ea433de-b079-42e7-901a-77eec656c76c",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "44b6d008-1c40-4c52-9259-1a8f8d73fefb",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"pm.expect(pm.response.text()).to.include(\"Missing birth date in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"711222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test7@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator telephone number provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "38172d60-715d-4a57-ab6d-aa0885e182f1",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "a0fb69c5-8a7f-4877-af02-44588e68f044",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing telephone number in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"811222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"email\":\"test8@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator email provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "35db21b9-e8d0-4536-80cb-a047dc3d4545",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "5fcc2ab0-25f2-48bb-8529-5c9f3dc25193",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing email in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"911222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator gender provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b198ef3b-2302-41cb-af78-8fd0174967d6",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "bfeaafc6-48b0-4eda-b673-bd6ba32d8cf1",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing gender in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"121222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test10@email.com\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "No administrator zip code provided",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "fda24792-8c93-47aa-8fe8-16cbe463e219",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "58df768f-28b4-4e7e-b95f-dfb67de7049e",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing zip code in address!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"141222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test12@email.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid email parameter",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "4b076d6e-e928-4ac0-94b1-f8e0bebd3df9",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "882f6582-4a12-45f0-b263-a773ea7f86b0",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Invalid email format in person!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"151222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test13gmail.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid gender parameter",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "eae62156-c06f-4ae7-93b3-d6c9de2f8a55",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "88ccdf69-a97e-400b-96b2-321ccca2f061",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include('Gender must be \\\\\"m\\\\\" or \\\\\"f\\\\\" in person!');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"161222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2001-03-21\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test14@gmail.com\",\n\t\"gender\":\"z\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid birth date parameter",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b6dec659-8e30-427d-aed0-6cdf99fc9b13",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "89e46d6e-b776-4edc-bac3-10a7509ffbde",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include('Birth date cannot be higher than current date in person!');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"171222333\",\n\t\"first_name\":\"Mário\",\n\t\"last_name\":\"Marques\",\n\t\"birth_date\":\"2999-01-01\",\n\t\"telephone_number\":\"911234234\",\n\t\"email\":\"test15@gmail.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"state\":\"ff286781-dd58-4b90-9582-95f62d06451c\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/administrators",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"administrators"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{admin_access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "afe70976-1060-40b5-b657-6fc2b7681cb2",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "774bf578-2a65-4ecc-97f3-c0bf3b9d8c23",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Add Doctor",
+							"item": [
+								{
+									"name": "Missing doctor name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "86e0fcac-dd25-4621-82e9-b1e5aab173bf",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "70c2537d-3561-4657-8f10-1d2f1d5e026d",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing doctor name!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"professional_certificate\":\"fkri3wajo7et4od\",\n\t\"email\":\"doctor@test.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451c\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing doctor professional certificate",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b3dd7b32-6c29-465d-b99b-67781cfeb3fd",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "3e1bdd92-e5e3-448c-ab74-ebdc3a8388d3",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Doctor must have a professional certificate!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\":\"Test Doctor\",\n\t\"email\":\"doctor@test.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451c\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid email",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "883f8c26-9af7-4bc0-ae38-7779be75177e",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "ea55e252-3aee-4eb4-a65b-95252ab97340",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Doctor email is not valid!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\":\"Test Doctor\",\n\t\"professional_certificate\":\"fkri3wajo7et4od\",\n\t\"email\":\"doctortest.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451c\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid doctor state",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "0b3c5875-bfa5-4076-9caf-98de3ac9310f",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "cb6ff8fc-8db5-4adf-875b-d71b8b0deb53",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"The state is not valid!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\":\"Test Doctor\",\n\t\"professional_certificate\":\"fkri3wajo7et4od\",\n\t\"email\":\"doctor@test.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451d\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Successful Doctor Creation",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "e2621283-a0bd-4de8-b17b-feb5c9ddeeb6",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "81e40767-8fdb-4b41-8e6a-e74dba7a2f85",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('doctor_ID');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\":\"Test Doctor\",\n\t\"professional_certificate\":\"fkri3wajo7et4od\",\n\t\"email\":\"doctor@test.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451c\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Professional certificate already exists",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "931a130e-3c51-4644-b079-47af54ec1625",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "ba066324-1ff1-4e5f-8e16-58f5e83d9654",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"There's already a Doctor registered with this professional certificate!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"name\":\"Test Doctor\",\n\t\"professional_certificate\":\"fkri3wajo7et4od\",\n\t\"email\":\"doctor@test.com\",\n\t\"state_id\":\"ff286781-dd58-4b90-9582-95f62d06451c\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/doctors",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"doctors"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{admin_access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a843575a-e054-43db-9156-fda39316b673",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "177158cb-37d6-45db-af7a-2f6f2deeec31",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Add Patient",
+							"item": [
+								{
+									"name": "Add a Patient Successfully",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "aaa75b74-874f-4610-8031-2afde05e2201",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('patient_id');",
+													"    pm.expect(jsonData).to.have.property('person_id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n            \"nif\":\"13029966\",\n            \"first_name\":\"Pedro\",\n            \"last_name\":\"Roxo\",\n            \"birth_date\":\"1950-03-21\",\n            \"telephone_number\":\"960234567\",\n            \"email\":\"jdssw@mkll.com\",\n            \"gender\":\"m\",\n            \"address\": {\n\t\t\t\t\"city\":\"Porto\",\n\t\t\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\t\t\"zip_code\":\"4465-123\"\n\t\t\t},\n            \"profession\": \"Officer\",\n            \"clinical_history\": \"We used some ointments on her.\",\n            \"diagnostic\": \"Bad elbow\"\n            }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "fc4e948e-585a-42f9-891a-e7997de80126",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Invalid email format in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahilcom\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing first name",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "7593c7d7-322b-46f9-9b06-ef38eb2e1946",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing first name in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing last name",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "2f30383e-5401-4bad-9fc3-45ddd0e44f8d",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing last name in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"2233021\",\n\t\"first_name\":\"Pedro\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"Mant@endhil.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"profession\": \"Retired\",\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing birth date",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f2de85e9-3f07-4c86-b59a-11905d36588e",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing birth date in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\": \"99548932\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"att@efahil.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"profession\": \"Retired\",\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing telephone number",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "78bda13a-bf4e-45de-8aaf-f0b457f2ca2c",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing telephone number in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing gender",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "f994a16d-deda-42b3-9437-8c645a649150",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing gender in person!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing profession",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "4e12309c-775b-41df-ad7b-ab6e943b27e0",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing profession in patient!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing clinical history",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "eb885296-af8d-4222-949b-f09a9e09ca0c",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing clinical history in patient!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"profession\": \"Retired\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing diagnostic",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "bdd243c7-f5c1-421a-b135-161b586e12ad",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing diagnostic in patient!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing street",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "7cce1a55-e68b-4972-a08e-3f4dd956e1b7",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing street in address!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"profession\": \"Retired\",\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing city",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ae8ca991-7024-42fd-bcc7-ea3d181db1b4",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing city in address!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing zip code",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "14230d45-efd2-412e-99a4-9d0f0e43d474",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing zip code in address!\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13090533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unique constraint violation",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "1e8a080a-462c-4d42-a226-e18f6fd995d3",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Unique contraint violation! Another user with the same nif and/or email already exists\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"13029966\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tt@eahil.com\",\n\t\"gender\":\"m\",\n\t\"profession\": \"Retired\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid gender",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "27fb0cd9-83ac-4788-b8ea-d81f93aa43eb",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    pm.expect(pm.response.text()).to.include('Gender must be \\\\\"m\\\\\" or \\\\\"f\\\\\"');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"nif\":\"130021533\",\n\t\"first_name\":\"Pedro\",\n\t\"last_name\":\"Azul\",\n\t\"birth_date\":\"1950-03-21\",\n\t\"telephone_number\":\"963234567\",\n\t\"email\":\"tttll@email.com\",\n\t\"gender\":\"a\",\n\t\"address\": {\n\t\t\"city\":\"Porto\",\n\t\t\"street\":\"Rua Oliveira Gaio\",\n\t\t\"zip_code\":\"4465-123\"\n\t},\n\t\"profession\": \"Retired\",\n\t\"clinical_history\": \"We used some ointments on her.\",\n\t\"diagnostic\": \"Bad elbow\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{admin_access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "ac7de044-64df-40ec-b5b3-808968decd65",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "e86055a9-0f43-4501-90f2-1c70b1a74052",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Associate Physio to Patient",
+							"item": [
+								{
+									"name": "Associate Physio to Patient",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "bf893809-fb56-4d94-b05f-57d119667184",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('patient_id');",
+													"    pm.expect(jsonData).to.have.property('physiotherapist_id');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"physiotherapist_id\":\"bbd29d3a-5977-4d0e-8c8e-987c329e6b7d\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients/79840898-b26f-441f-b8a3-a2642227c77d/associate-physiotherapist",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"79840898-b26f-441f-b8a3-a2642227c77d",
+												"associate-physiotherapist"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Associate trades existing physio",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "98634eeb-da65-45e9-be70-fabf21ad4633",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('patient_id');",
+													"    pm.expect(jsonData).to.have.property('physiotherapist_id');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"physiotherapist_id\":\"acd1453a-5971-4d0e-1cfe-987c0c9e333d\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients/79840898-b26f-441f-b8a3-a2642227c77d/associate-physiotherapist",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"79840898-b26f-441f-b8a3-a2642227c77d",
+												"associate-physiotherapist"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{admin_access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c12a5a86-0f95-4410-81c9-26c058a889dd",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "44b7e67b-b892-4d2a-949d-60691b472a71",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Associate Physio to Patient",
+							"item": [
+								{
+									"name": "Associate Physio to Patient",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "3ad48591-b9f8-4711-be36-0de97e3e329f",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('patient_id');",
+													"    pm.expect(jsonData).to.have.property('physiotherapist_id');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"physiotherapist_id\":\"bbd29d3a-5977-4d0e-8c8e-987c329e6b7d\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients/79840898-b26f-441f-b8a3-a2642227c77d/associate-physiotherapist",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"79840898-b26f-441f-b8a3-a2642227c77d",
+												"associate-physiotherapist"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Associate trades existing physio",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "0bfb3d2f-003c-48ba-944c-a2205d385dc5",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('patient_id');",
+													"    pm.expect(jsonData).to.have.property('physiotherapist_id');",
+													"    pm.expect(jsonData).to.have.property('id');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"physiotherapist_id\":\"acd1453a-5971-4d0e-1cfe-987c0c9e333d\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients/79840898-b26f-441f-b8a3-a2642227c77d/associate-physiotherapist",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"79840898-b26f-441f-b8a3-a2642227c77d",
+												"associate-physiotherapist"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{admin_access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5f61a8c4-f7c0-4d06-b5b9-03b9aaa7a323",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "5983bd27-265a-4d5d-a63d-fa5fc15d1c81",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "List",
+					"item": [
+						{
+							"name": "List All Patients",
+							"item": [
+								{
+									"name": "List All Patients Physio",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "e23aa626-49b2-4daf-95b8-1d0e91de85b8",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "f5337ab9-72f1-4374-b884-a3f506a2ad14",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('page_links');",
+													"    var linkData = jsonData['page_links']",
+													"    pm.expect(linkData).to.have.property('first');",
+													"    pm.expect(linkData).to.have.property('last');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('total_pages');",
+													"    pm.expect(jsonData).to.have.property('total_results');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('results');",
+													"    var resultsData = jsonData['results'][0]",
+													"    pm.expect(resultsData).to.have.property('id');",
+													"    pm.expect(resultsData).to.have.property('name');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List All Patients Admin",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "1502f2f9-0ca2-4740-8152-a4d110a31d64",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "bb254529-21a4-4a09-aa87-a7e050e222e8",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('page_links');",
+													"    var linkData = jsonData['page_links']",
+													"    pm.expect(linkData).to.have.property('first');",
+													"    pm.expect(linkData).to.have.property('last');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('total_pages');",
+													"    pm.expect(jsonData).to.have.property('total_results');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('results');",
+													"    var resultsData = jsonData['results'][0]",
+													"    pm.expect(resultsData).to.have.property('id');",
+													"    pm.expect(resultsData).to.have.property('name');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Patients Query",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "0dbc7c3c-1179-49e3-bf26-1a42bda12337",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "7e84b7d5-73e3-4ee3-b3b7-a1346bdbcfca",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('page_links');",
+													"    var linkData = jsonData['page_links']",
+													"    pm.expect(linkData).to.have.property('first');",
+													"    pm.expect(linkData).to.have.property('last');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('total_pages');",
+													"    pm.expect(jsonData).to.have.property('total_results');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('results');",
+													"    var resultsData = jsonData['results'][0]",
+													"    pm.expect(resultsData).to.have.property('id');",
+													"    pm.expect(resultsData).to.have.property('name');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin_access_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients?page_num=1&page_size=1&query=Zalberto",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "1"
+												},
+												{
+													"key": "query",
+													"value": "Zalberto"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Number",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b33f5cbc-aa29-43a5-a0c1-f1970ec5e92a",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "739d8ce2-b8a2-4424-a5e7-e6b1411ae5e6",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page number must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients?page_num=0&page_size=1",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "0"
+												},
+												{
+													"key": "page_size",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Size",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "9ac6351c-8e71-41b7-9d29-863d932d00dd",
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "16a499a3-e6ec-4e8a-b5ce-c75e63b13215",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page size must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://{{host}}/patients?page_num=1&page_size=0",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "0"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "List All Treatment Cycle Treatments",
+							"item": [
+								{
+									"name": "Successfully List All Treatments in Treatment Cycle",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "31106d36-eb2e-49c3-9ba7-8cc65f818fbf",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "a1fca0c1-1572-4e58-9c06-6bf2206f144a",
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"The return body is valid\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData).to.have.property('page_links');",
+													"    var linkData = jsonData['page_links']",
+													"    pm.expect(linkData).to.have.property('first');",
+													"    pm.expect(linkData).to.have.property('last');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('total_pages');",
+													"    pm.expect(jsonData).to.have.property('total_results');",
+													"    ",
+													"    pm.expect(jsonData).to.have.property('results');",
+													"    var resultsData = jsonData['results'][0]",
+													"    pm.expect(resultsData).to.have.property('id');",
+													"    pm.expect(resultsData).to.have.property('start_date');",
+													"    pm.expect(resultsData).to.have.property('summary');",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"{{id_patient}}",
+												"treatment-cycles",
+												"{{id_treatment_cycle}}",
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Number",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "8e1f56aa-5640-40a4-96f0-bbb8a9945138",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "4cead41d-fa23-4d09-8be9-207977a3b9d9",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page number must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments?page_num=0&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"{{id_patient}}",
+												"treatment-cycles",
+												"{{id_treatment_cycle}}",
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "0"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Size",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "60b60bfe-a860-4fce-89a9-75ad654b0838",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "9cb54c5c-fe60-4842-b9a9-950baca095ae",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page size must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments?page_num=1&page_size=0",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"{{id_patient}}",
+												"treatment-cycles",
+												"{{id_treatment_cycle}}",
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "0"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Treatment Cycle",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "493989a6-e02b-4e37-9cc6-62beb17ebf0a",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"79840898-b26f-441f-b8a3-a2642227c77d\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "c144ac47-fea1-4ee6-82c8-7c2c002a2412",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"The treatment cycle is not valid!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"patients",
+												"{{id_patient}}",
+												"treatment-cycles",
+												"{{id_treatment_cycle}}",
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "List Physiotherapist Treatments",
+							"item": [
+								{
+									"name": "Successfully List All Treatments of a Physiotherapist",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/treatments?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Number",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "d62fbf42-89ef-462f-8bbb-07a555a6636f",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "ad4ebbaa-df52-4735-89ff-a4e3e615c974",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page number must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/treatments?page_num=0&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "0"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Invalid Page Size",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "59a62f05-1d03-4d40-aa08-4072dc78e611",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"acf7bd28-3ea2-4491-9ad5-89a9ea8204bc\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "f0683622-63d7-4e7b-9b3d-93ff006abfb3",
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Page size must be greater than 1!\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/treatments?page_num=1&page_size=0",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "0"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Missing authentication token",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "1e681576-fc9b-4411-b9e1-de1260ec12ca",
+												"exec": [
+													"pm.environment.set(\"id_patient\", \"79840898-b26f-441f-b8a3-a2642227c77d\");",
+													"pm.environment.set(\"id_treatment_cycle\", \"79840898-b26f-441f-b8a3-a2642227c77d\");"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "b0ba6fe8-a802-4377-bc4c-05728233d146",
+												"exec": [
+													"pm.test(\"Status code is 401\", function () {",
+													"    pm.response.to.have.status(401);",
+													"});",
+													"",
+													"pm.test(\"Error received is correct\", function () {",
+													"    pm.expect(pm.response.text()).to.include(\"Missing or invalid format for mandatory Authorization header\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://{{host}}/treatments?page_num=1&page_size=10",
+											"protocol": "http",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"treatments"
+											],
+											"query": [
+												{
+													"key": "page_num",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{access_token}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "69f1fa93-cfc3-4a8b-bc11-c1e0aea6919b",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "f257ca3b-b37d-4ccc-9807-7b50bf7ffcd6",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Patient Info",
+					"item": [
+						{
+							"name": "Get patient info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d297e79f-007a-4103-bfda-203c4cbb5e65",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('person');",
+											"    pm.expect(jsonData).to.have.property('doctor');",
+											"    pm.expect(jsonData).to.have.property('profession');",
+											"    pm.expect(jsonData).to.have.property('diagnostic');",
+											"    pm.expect(jsonData).to.have.property('clinical_history');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unexistent patient id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "325c562a-ec2b-4cce-9e79-3dc3512d5eca",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"The patient is not valid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/e7bb03fd-671c-49f5-ab19-bbc24c34ee43",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"e7bb03fd-671c-49f5-ab19-bbc24c34ee43"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid patient uuid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2325ab58-3544-434b-8189-ab26f1bbb0da",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Invalid uuid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/23456789876543",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"23456789876543"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "02a7637a-8558-43cb-9697-71abadef2c06",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f0ef2882-9e44-46b2-acf8-a5051f5d2ec8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Treatment ",
+			"item": [
+				{
+					"name": "Goniometry",
+					"item": [
+						{
+							"name": "Get goniometry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "29642acc-c32e-4b7b-a291-babd71c8683f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('treatment');",
+											"    pm.expect(jsonData).to.have.property('body_zone');",
+											"    pm.expect(jsonData).to.have.property('min_abduction');",
+											"    pm.expect(jsonData).to.have.property('max_abduction');",
+											"    pm.expect(jsonData).to.have.property('min_adduction');",
+											"    pm.expect(jsonData).to.have.property('max_adduction');",
+											"    pm.expect(jsonData).to.have.property('min_flexion');",
+											"    pm.expect(jsonData).to.have.property('max_flexion');",
+											"    pm.expect(jsonData).to.have.property('min_rotation');",
+											"    pm.expect(jsonData).to.have.property('max_rotation');",
+											"    pm.expect(jsonData).to.have.property('min_extension');",
+											"    pm.expect(jsonData).to.have.property('max_extension');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/goniometries/{{id_goniometry}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"goniometries",
+										"{{id_goniometry}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid goniometry id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e3f4142f-2aca-4fcc-b753-31b42e52848b",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Invalid uuid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/goniometries/{{id_goniometry}}122",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"goniometries",
+										"{{id_goniometry}}122"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unexistent goniometry id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "36a1ed8f-5d5b-4959-873c-f34e0854066c",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"The goniometry is not valid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/goniometries/27b8f4c4-e261-47df-9bda-92f5af03c8ad",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"goniometries",
+										"27b8f4c4-e261-47df-9bda-92f5af03c8ad"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Perimetry",
+					"item": [
+						{
+							"name": "Get perimetry",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7b5cb4f0-a413-40f9-bebe-fdb4a0832c95",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('treatment');",
+											"    pm.expect(jsonData).to.have.property('body_zone');",
+											"    pm.expect(jsonData).to.have.property('size');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/perimetries/{{id_perimetry}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"perimetries",
+										"{{id_perimetry}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid perimetry id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "346bbd9c-4f85-405c-a281-4ee55061afe4",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Invalid uuid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/perimetries/{{id_perimetries}}122",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"perimetries",
+										"{{id_perimetries}}122"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unexistent perimetry id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f06c420f-76cc-4587-9722-b4ea32e0dc0e",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"The perimetry is not valid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/perimetries/27b8f4c4-e261-47df-9bda-92f5af03c8ad",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"perimetries",
+										"27b8f4c4-e261-47df-9bda-92f5af03c8ad"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Muscle Test",
+					"item": [
+						{
+							"name": "Get muscle test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a167d9f9-393a-4e77-9aef-cc260a50d08c",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('treatment');",
+											"    pm.expect(jsonData).to.have.property('body_zone');",
+											"    pm.expect(jsonData).to.have.property('strength');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/muscle-tests/{{id_muscle_test}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"muscle-tests",
+										"{{id_muscle_test}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid muscle test id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6bb7377d-1eb6-4864-8f72-8cc3712ca4b0",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Invalid uuid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/muscle-tests/{{id_muscle_test}}122",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"muscle-tests",
+										"{{id_muscle_test}}122"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unexistent muscle test id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bd524153-4aa7-46f0-a088-cbc90cd3471a",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"The muscle test is not valid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}/muscle-tests/27b8f4c4-e261-47df-9bda-92f5af03c8ad",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}",
+										"muscle-tests",
+										"27b8f4c4-e261-47df-9bda-92f5af03c8ad"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Treatment Folder",
+					"item": [
+						{
+							"name": "Treatment Info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3e4f28b3-4360-4773-a9a6-f13b1a2f7714",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"    pm.expect(jsonData).to.have.property('start_date');",
+											"    pm.expect(jsonData).to.have.property('end_date');",
+											"    pm.expect(jsonData).to.have.property('summary');",
+											"    pm.expect(jsonData).to.have.property('pain_level');",
+											"    pm.expect(jsonData).to.have.property('medication');",
+											"    pm.expect(jsonData).to.have.property('treatment');",
+											"    pm.expect(jsonData).to.have.property('periodic_evaluation');",
+											"    pm.expect(jsonData).to.have.property('treatment_cycle');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid Treatment Info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "56913d68-7966-4418-9b73-d09a8b5a3235",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Invalid uuid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/{{id_treatment}}kfrs",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"{{id_treatment}}kfrs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unexistent Treatment Info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5250aa67-18f4-49b7-94db-c9004b5d34c8",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"The treatment is not valid!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/patients/{{id_patient}}/treatment-cycles/{{id_treatment_cycle}}/treatments/27b8f4c4-e261-47df-9bda-92f5af03c8ad",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"patients",
+										"{{id_patient}}",
+										"treatment-cycles",
+										"{{id_treatment_cycle}}",
+										"treatments",
+										"27b8f4c4-e261-47df-9bda-92f5af03c8ad"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Body Zones",
+			"item": [
+				{
+					"name": "List",
+					"item": [
+						{
+							"name": "List All Body Zones",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "99d291cb-2be2-463b-8998-84a643522fbb",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('page_links');",
+											"    var linkData = jsonData['page_links']",
+											"    pm.expect(linkData).to.have.property('first');",
+											"    pm.expect(linkData).to.have.property('last');",
+											"    ",
+											"    pm.expect(jsonData).to.have.property('total_pages');",
+											"    pm.expect(jsonData).to.have.property('total_results');",
+											"    ",
+											"    pm.expect(jsonData).to.have.property('results');",
+											"    var resultsData = jsonData['results'][0]",
+											"    pm.expect(resultsData).to.have.property('id');",
+											"    pm.expect(resultsData).to.have.property('name');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/body-zones?page_num=1&page_size=10",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"body-zones"
+									],
+									"query": [
+										{
+											"key": "page_num",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Body Zones Query",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a6b8c6f9-f11e-490b-8314-1770ac684ce1",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"The return body is valid\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('page_links');",
+											"    var linkData = jsonData['page_links']",
+											"    pm.expect(linkData).to.have.property('first');",
+											"    pm.expect(linkData).to.have.property('last');",
+											"    ",
+											"    pm.expect(jsonData).to.have.property('total_pages');",
+											"    pm.expect(jsonData).to.have.property('total_results');",
+											"    ",
+											"    pm.expect(jsonData).to.have.property('results');",
+											"    var resultsData = jsonData['results'][0]",
+											"    pm.expect(resultsData).to.have.property('id');",
+											"    pm.expect(resultsData).to.have.property('name');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{host}}/body-zones?page_num=1&page_size=10&query=Ombro",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"body-zones"
+									],
+									"query": [
+										{
+											"key": "page_num",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "10"
+										},
+										{
+											"key": "query",
+											"value": "Ombro"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid Page Number",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "8e3a7fe0-63ef-4369-a16e-70f7cb0eb244",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "caa25ffe-e837-43e0-a410-7fdc9167ee55",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Page number must be greater than 1!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}/body-zones?page_num=0&page_size=1",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"body-zones"
+									],
+									"query": [
+										{
+											"key": "page_num",
+											"value": "0"
+										},
+										{
+											"key": "page_size",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid Page Size",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "7ccfac1d-9e54-460f-9b34-7b797e076579",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "b0d9d185-9fe1-4399-872a-803994f2d1aa",
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Error received is correct\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Page size must be greater than 1!\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}/body-zones?page_num=1&page_size=0",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"body-zones"
+									],
+									"query": [
+										{
+											"key": "page_num",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "HelloWorld",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4261fefc-8171-4a98-a85e-e77b76747487",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/martin-helder",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"martin-helder"
+					]
+				},
+				"description": "Simple hello world endpoint to make sure things are working!"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6d749354-64de-431a-b889-33f6426c14a2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "42e222dc-0d53-400f-8c3e-d57b234d4595",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b692a721-fd94-438c-95b4-a4127a804d7a",
+			"key": "host",
+			"value": "localhost:8000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

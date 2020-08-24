@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    volumes:
+      - ./database/test_data.sql:/docker-entrypoint-initdb.d/data.sql
+
+  newman:
+    image: postman/newman
+    volumes:
+      - ./postman_tests:/etc/newman
+    depends_on:
+      - web
+      - db

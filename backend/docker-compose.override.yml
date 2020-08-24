@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    env_file:
+      - ./.env
+    volumes:
+      - ./database/test_data.sql:/docker-entrypoint-initdb.d/data.sql
+
+  web:
+    env_file:
+      - ./.env

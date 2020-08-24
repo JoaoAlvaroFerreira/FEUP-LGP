@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    expose:
+      - "5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data/
+
+  web:
+    build: .
+    restart: always
+    environment:
+      - DEBUG=0
+      - ALLOWED_HOSTS
+      - SECRET_KEY
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    command: gunicorn --bind 0.0.0.0:8080 martin_helder.wsgi
+    volumes:
+      - .:/code
+    expose:
+      - "8080"
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx/
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+     - db
+     - web

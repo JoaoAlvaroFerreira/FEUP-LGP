@@ -1,0 +1,2 @@
+**/*.test.js
+register-service-worker.js
